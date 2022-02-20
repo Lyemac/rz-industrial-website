@@ -42,7 +42,7 @@
 
         // FIXME: Update this to your desired email address.
 
-        $recipient = "admin@themepure.net";
+        $recipient = "sales@rzindustrial.co.za";
 
 
 
@@ -54,7 +54,7 @@
 
         //Email Header
 
-        $head = " ====== BDevs  ====== ";
+        $head = " ====== RZ INDUSTRIAL TRADING  ====== ";
 
 
 
@@ -77,6 +77,7 @@
         // Build the email headers.
 
         $email_headers = "From: $name <$email>";
+        $email_headers .= "BCC: jason@lyemac.co.za\r\n";
 
 
 
