@@ -2031,6 +2031,10 @@ only screen and (min-width: 768px) and (max-width: 991px) {
     overflow: hidden;
 }
 
+.theme-btn .whatsapp-btn {
+    background: #25D366;
+}
+
 .theme-btn:before {
     background-color: #ffffff;
     content: "";
@@ -2100,6 +2104,10 @@ only screen and (min-width: 768px) and (max-width: 991px) {
 .theme-btn:hover {
     background: #fdbb53;
     color: #ffffff;
+}
+
+.theme-btn .whatsapp-btn:hover {
+    background: #25D366;
 }
 
 .theme-btn:hover:before {
