@@ -1,108 +1,55 @@
 <?php
 
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: POST');
 
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
+
+    require '/PHPMailer/src/Exception.php';
+    require '/PHPMailer/src/PHPMailer.php';
+    require '/PHPMailer/src/SMTP.php';
 
     // Only process POST reqeusts.
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        //Create an instance; passing `true` enables exceptions
+        $mail = new PHPMailer(true);
 
-        // Get the form fields and remove MORALspace.
+        try {
+            //Server settings
+            $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+            $mail->isSMTP();                                            //Send using SMTP
+            $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
+            $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+            $mail->Username   = 'info@lyemac.co.za';                     //SMTP username
+            $mail->Password   = 'zniecjwiiblheffs';                               //SMTP password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
+            $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
-        $name = strip_tags(trim($_POST["name"]));
+            //Recipients
+            $mail->setFrom('info@lyemac.co.za', 'Lyemac Info');
+            $mail->addAddress('dejesuzjason@gmail.com', 'Joe User');     //Add a recipient
+            // $mail->addAddress('ellen@example.com');               //Name is optional
+            // $mail->addReplyTo('info@example.com', 'Information');
+            // $mail->addCC('cc@example.com');
+            // $mail->addBCC('bcc@example.com');
 
-				$name = str_replace(array("\r","\n"),array(" "," "),$name);
+            // //Attachments
+            // $mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
+            // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
 
-        $email = filter_var(trim($_POST["email"]), FILTER_SANITIZE_EMAIL);
+            //Content
+            $mail->isHTML(true);                                  //Set email format to HTML
+            $mail->Subject = 'Here is the subject';
+            $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
+            $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
-        $phone = trim($_POST["phone"]);
-
-        $select = trim($_POST["contact-select"]);
-
-        $message = trim($_POST["message"]);
-
-
-
-        // Check that data was sent to the mailer.
-
-        if ( empty($name) OR empty($message) OR empty($phone) OR empty($select) OR !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-
-            // Set a 400 (bad request) response code and exit.
-
-            http_response_code(400);
-
-            echo "Please complete the form and try again.";
-
-            exit;
-
+            $mail->send();
+            echo 'Message has been sent';
+        } catch (Exception $e) {
+            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
-
-
-
-        // Set the recipient email address.
-
-        // FIXME: Update this to your desired email address.
-
-        $recipient = "sales@rzindustrial.co.za";
-
-
-
-        // Set the email of sender.
-
-        $sender = "New contact from $name";
-
-
-
-        //Email Header
-
-        $head = " ====== RZ INDUSTRIAL TRADING  ====== ";
-
-
-
-        // Build the email content.
-
-        $email_content = "$head\n\n\n";
-
-        $email_content .= "Name: $name\n";
-
-        $email_content .= "Email: $email\n\n";
-
-        $email_content .= "Phone: $phone\n\n";
-
-        $email_content .= "Select: $select\n\n";
-
-        $email_content .= "Message:\n$message\n";
-
-
-
-        // Build the email headers.
-
-        $email_headers = "From: $name <$email>";
-        $email_headers .= "BCC: jason@lyemac.co.za\r\n";
-
-
-
-        // Send the email.
-
-        if (mail($recipient, $sender, $email_content, $email_headers)) {
-
-            // Set a 200 (okay) response code.
-
-            http_response_code(200);
-
-            echo "Thank You! Your message has been sent.";
-
-        } else {
-
-            // Set a 500 (internal server error) response code.
-
-            http_response_code(500);
-
-            echo "Oops! Something went wrong and we couldn't send your message.";
-
-        }
-
-
-
     } else {
 
         // Not a POST request, set a 403 (forbidden) response code.
